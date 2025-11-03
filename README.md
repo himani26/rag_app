@@ -1,114 +1,128 @@
-#Life Sciences RAG Assistant
+**🧠 Medical RAG Chatbot (LangChain + Chroma + Hybrid Search)**
 
-A Retrieval-Augmented Generation (RAG) pipeline designed for pharmaceutical document intelligence. This solution enables users to upload PDFs (e.g., drug monographs, clinical trial summaries, medical guidelines), build a searchable knowledge index, ask medical questions, and receive grounded, context-based answers.
-
-⸻
-
-🔍 Key Capabilities
-	•	Upload pharma PDFs and build vector index
-	•	Query drug-related information
-	•	Generates context-aware and factual answers using LLM
-	•	On-demand summarization of PDFs
-	•	Embedded RAG evaluation script for precision scoring
+This project is a Retrieval-Augmented Generation (RAG) app designed for medical documents.
+It allows users to upload a PDF, build a knowledge index, ask medical questions, and generate summaries — powered by LangChain, ChromaDB, Hybrid Search (BM25 + Dense), and Claude Opus.
 
 ⸻
 
-📁 Project Structure
+🚀 Features
 
-rag_pipeline/
-│── app.py                 # Streamlit UI
-│── src/
-│   ├── build_index.py     # PDF loading, chunking, vector store creation
-│   ├── rag_pipeline.py    # Retriever + RAG chain creation
-│   ├── llm_config.py      # LLM + embedding config
-│   ├── summarize.py       # PDF summarization pipeline
-│   └── evaluate_rag.py    # RAG performance evaluation
-└── vector_store/          # Persisted Chroma DB
+Feature	Description
+📄 PDF Upload	User uploads a medical PDF
+
+⚙️ Vector Index Builder	Extract & embed document chunks (HuggingFace MiniLM)
+
+🔍 Hybrid Retrieval	Dense + BM25 + Cross Encoder Re-ranking
+
+🧠 RAG QA	Claude Opus answers using retrieved context
+
+📝 Document Summary	Map-reduce summarization using LLM
+
+💾 Persistent Chroma DB	Index remains across sessions
+
+📊 RAG Evaluation Script	Measures retrieval & answer quality
 
 
 ⸻
 
-⚙️ How It Works
+🏗️ Architecture
 
-1️⃣ Upload PDF & Build Index
-	•	Loads PDF pages
-	•	Splits into 1000-char chunks (150 overlap)
-	•	Embeds using MiniLM HuggingFace embeddings
-	•	Saves vectors in ChromaDB
+User → Streamlit UI → Index Builder → ChromaDB → Hybrid Retriever → Claude Opus
 
-2️⃣ Ask a Question
-	•	Query is embedded
-	•	Hybrid search retrieves most relevant text
-	•	Claude Opus answers only using retrieved context
+Pipeline:
 
-3️⃣ Optional — PDF Summary
-	•	Map-reduce summarization pipeline
-	•	Provides quick, structured medical insights
-
-4️⃣ Evaluate RAG
-	•	Cosine-similarity scoring vs human ground truths
-	•	Retrieval & generation accuracy metrics
-
-⸻
-
-🧠 Tech Stack & Justification
-
-Component	Choice	Reason
-Vector DB	Chroma	Lightweight, fast, persistent, local
-Embeddings	MiniLM	Small, accurate, fast for pharma domain
-LLM	Claude-3 Opus	Strong factual grounding & medical reasoning
-Framework	LangChain	Modular RAG orchestration, retrievers, wrappers
-UI	Streamlit	Rapid prototyping + user-friendly
+PDF Upload → Text Split → Embeddings → Chroma Vector Store
+↓
+Query → BM25 + Vector Search + Cross-Encoder Rerank
+↓
+Claude Opus LLM answers using retrieved context
 
 
 ⸻
 
-🚀 Running the Application
 
-Install dependencies
+📂 Project Structure
+
+
+<img width="560" height="197" alt="image" src="https://github.com/user-attachments/assets/3aa41af3-ae7a-4697-b12d-fdd405d5e670" />
+
+
+
+⸻
+
+
+<img width="666" height="391" alt="image" src="https://github.com/user-attachments/assets/71639886-94e1-4c11-892e-3cffe82fb445" />
+
+
+
+⸻
+
+▶️ Run the Application
+
+Python 3.10+ recommended
+
+1️⃣ Install Dependencies
 
 pip install -r requirements.txt
 
-Run Streamlit app
+2️⃣ Run Streamlit App
 
 streamlit run app.py
 
-Build Vector Index
-
-Click “Build Index” in UI after uploading PDF
-
-Ask Questions & View Answers
-
-Type your query in the UI and hit Search
-
-Evaluate RAG
-
-python src/evaluate_rag.py
-
+3️⃣ Upload PDF → Click Build Knowledge Index → Ask Questions ✅
 
 ⸻
 
-📊 Evaluation Method
-	•	10 curated pharma questions (Repatha/Aimovig)
-	•	Cosine similarity scoring
-	•	Reports retrieval vs generation performance
+🧪 RAG Evaluation
+
+Run this to score retrieval + response quality:
+
+python evaluate_rag.py
+
+Evaluation Output Example:
+
+Average Retrieval Similarity: 0.45
+Average Generation Similarity: 0.56
+
+Scores improve with better embeddings, improved chunking, and more data.
 
 ⸻
 
-📌 Business Value
-	•	Accelerates access to medical knowledge
-	•	Reduces manual search across 300-page drug docs
-	•	Improves medical call-center productivity
-	•	Enables medical reps & clinicians to get factual info fast
-	•	Customizable for pharmacovigilance, medical affairs, clinical teams
+💼 Business Value 
+
+✅ Faster access to scientific docs
+
+✅ Reduces medical team workload
+
+✅ Ensures context-grounded, compliant responses
+
+✅ No hallucinations — answers only from uploaded docs
+
+✅ Keeps proprietary research private (local vector DB)
 
 ⸻
 
-🔮 Future Enhancements
-	•	BM25 + dense hybrid retriever
-	•	Reranking via cross-encoder (bio-med models)
-	•	RAG hallucination guardrails
-	•	Multi-document ingestion & multi-file search
+🔐 Compliance Notes (Pharma/Healthcare)
 
+	•	PDF is processed locally
+	
+	•	Chroma runs on enterprise VPC/desktop
+	
+	•	LLM API can be swapped with private deployment (Azure Anthropic/OpenAI)
+	
+	•	Enforces evidence-based answer grounding
 
+⸻
+
+🤝 Future Enhancements
+
+	•	Enterprise DB support (PGVector / Milvus)
+	
+	•	FDA 21 CFR Part 11 audit logs
+	
+	•	Retrieval evaluation UI dashboard
+	
+	•	Prompt-level RAG guardrails
+	
+	•	Multi-document knowledge base support
 
